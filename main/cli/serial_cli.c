@@ -102,12 +102,17 @@ static int cmd_set_model(int argc, char **argv)
 /* --- memory_read command --- */
 static int cmd_memory_read(int argc, char **argv)
 {
-    char buf[4096];
-    if (memory_read_long_term(buf, sizeof(buf)) == ESP_OK && buf[0]) {
+    char *buf = malloc(4096);
+    if (!buf) {
+        printf("Out of memory.\n");
+        return 1;
+    }
+    if (memory_read_long_term(buf, 4096) == ESP_OK && buf[0]) {
         printf("=== MEMORY.md ===\n%s\n=================\n", buf);
     } else {
         printf("MEMORY.md is empty or not found.\n");
     }
+    free(buf);
     return 0;
 }
 
